@@ -1,18 +1,10 @@
-from flask import Flask , request
+from flask import Flask , request, render_template_string
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import  create_engine
-from sqlalchemy.ext.declarative import declarative_base
 
 app = Flask(__name__)
 
-Base = declarative_base()
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ejemplo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-engine = create_engine('sqlite:///ejemplo.db', echo=True)
-Base.metadata.create_all(engine)
-
 
 db = SQLAlchemy(app)
 class Article(db.Model):
@@ -20,17 +12,29 @@ class Article(db.Model):
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
     
-
-
     def __repr__(self): 
          return f'<Article {self.id}: {self.title}>'
         
-
-
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def  home():
     return "Hola mundo"
+
+@app.route('/articles')
+def list_articles():
+    articles = Article.query.all()
+    viewAticle = """
+    <h1>Lista de Artículos</h1>
+    <ul>
+        {% for article in articles %}
+        <li>{{article.title}}
+        {%endfor%}
+    </ul>
+    """
+    return render_template_string(viewAticle, articles=articles)
+
 
 @app.route('/create-article', methods=['GET', 'POST'])
 def create_article():
@@ -56,11 +60,11 @@ def create_article():
 
 @app.route('/article/<int:article_id>')
 def view_article( article_id):
-    return (f"Ver artículo {article_id}")      
-
-
+    getArticle= Article.query.get_or_404(article_id)
+    return (f"Ver artículo {getArticle.title} contenido: {getArticle.content}")      
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
