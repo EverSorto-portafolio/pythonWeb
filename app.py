@@ -23,17 +23,7 @@ def  home():
     return "Hola mundo"
 
 @app.route('/articles')
-def list_articles():
-    articles = Article.query.all()
-    viewAticle = """
-    <h1>Lista de Artículos</h1>
-    <ul>
-        {% for article in articles %}
-        <li>{{article.title}}
-        {%endfor%}
-    </ul>
-    """
-    return render_template_string(viewAticle, articles=articles)
+def get_article():
 
 
 @app.route('/create-article', methods=['GET', 'POST'])
