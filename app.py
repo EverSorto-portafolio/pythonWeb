@@ -1,4 +1,4 @@
-from flask import Flask , request, render_template_string
+from flask import Flask, jsonify , request, render_template_string
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -22,9 +22,14 @@ with app.app_context():
 def  home():
     return "Hola mundo"
 
-@app.route('/articles')
+@app.route('/articles', methods=['GET'])
 def get_article():
-
+    articles = Article.query.all()
+    return jsonify([{
+        'id': article.id,
+        'title': article.title,
+        'content': article.content
+    } for article in articles])
 
 @app.route('/create-article', methods=['GET', 'POST'])
 def create_article():
