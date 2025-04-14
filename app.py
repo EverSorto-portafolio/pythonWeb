@@ -31,27 +31,22 @@ def get_article():
         'content': article.content
     } for article in articles])
 
-@app.route('/create-article', methods=['GET', 'POST'])
+@app.route('/create-article', methods=['POST'])
 def create_article():
-    if request.method == 'POST':
-        title = request.form.get('title')
-        content = request.form.get('content')
-        new_article = Article(title = title, content = content)
-        db.session.add(new_article)
-        db.session.commit()
-        return f'Artículo creado: {new_article.title} content: {new_article.content}'
+    data = request.get_json()
+    new_article = Article(
+        title=data['title'],
+        content=data['content'] 
+    )
+    db.session.add(new_article)
+    db.session.commit()
+    return jsonify({
+        'id': new_article.id,
+        'title': new_article.title,
+        'content': new_article.content
+    }), 201
 
-    return """
-    <form method ='POST' action = "create-article">
-        <label for ='title'> Titulo</label>
-        <input type = 'text' id = 'title' name = 'title'>
-        <br>
-        <label for ='content'> Contenido</label>
-        <textarea id = 'content' name = 'content'></textarea>
-        <br>
-        <input type = 'submit' value = 'Crear articulo'>
-    </form>
-"""
+
 
 @app.route('/article/<int:article_id>')
 def view_article( article_id):
