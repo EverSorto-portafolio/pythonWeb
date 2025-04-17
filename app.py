@@ -46,6 +46,20 @@ def create_article():
         'content': new_article.content
     }), 201
 
+@app.route('/article/<int:id>', method=['put'])
+def update_article(id):
+    article = Article.parans.get_or_404(id)
+    data = request.get_json()
+    article.title = data['title']
+    article.content = data['content']
+    db.session.commit()
+    return jsonify({
+        'id': article.id,
+        'title': article.title,
+        'content': article.content
+    })
+
+
 
 
 @app.route('/article/<int:article_id>')
