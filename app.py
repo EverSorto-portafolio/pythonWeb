@@ -59,13 +59,23 @@ def update_article(id):
         'content': article.content
     })
 
-
-
-
 @app.route('/article/<int:article_id>')
 def view_article( article_id):
     getArticle= Article.query.get_or_404(article_id)
-    return (f"Ver artículo {getArticle.title} contenido: {getArticle.content}")      
+    return jsonify({
+        'id': getArticle.id,
+        'title': getArticle.title,
+        'content': getArticle.content
+    })
+
+@app.route('/article/<int:article_id>', methods=['DELETE'])
+def delete(id):
+    article = Article.query.get_or_404(id)
+    db.session.delete(article)
+    db.session.commit()
+    return jsonify({
+        'message': f'Articulo {id} Elimiando'
+    }),200
 
 
 if __name__ == "__main__":
