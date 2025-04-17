@@ -1,19 +1,12 @@
 from flask import Flask, jsonify , request, render_template_string
-from flask_sqlalchemy import SQLAlchemy
+from models.article import db, Article 
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ejemplo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
-class Article(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    
-    def __repr__(self): 
-         return f'<Article {self.id}: {self.title}>'
+db.init_app(app)
         
 with app.app_context():
     db.create_all()
@@ -46,9 +39,9 @@ def create_article():
         'content': new_article.content
     }), 201
 
-@app.route('/article/<int:id>', method=['put'])
+@app.route('/article/<int:id>', methods=['PUT'])
 def update_article(id):
-    article = Article.parans.get_or_404(id)
+    article = Article.query.get_or_404(id)
     data = request.get_json()
     article.title = data['title']
     article.content = data['content']
@@ -68,7 +61,7 @@ def view_article( article_id):
         'content': getArticle.content
     })
 
-@app.route('/article/<int:article_id>', methods=['DELETE'])
+@app.route('/article/<int:id>', methods=['DELETE'])
 def delete(id):
     article = Article.query.get_or_404(id)
     db.session.delete(article)
@@ -76,7 +69,6 @@ def delete(id):
     return jsonify({
         'message': f'Articulo {id} Elimiando'
     }),200
-
 
 if __name__ == "__main__":
     app.run(debug=True)
