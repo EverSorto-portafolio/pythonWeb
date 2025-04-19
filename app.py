@@ -1,5 +1,6 @@
 from flask import Flask, jsonify , request, render_template_string
 from models.article import db, Article 
+from models.user import User
 
 app = Flask(__name__)
 
@@ -69,6 +70,29 @@ def delete(id):
     return jsonify({
         'message': f'Articulo {id} Elimiando'
     }),200
+
+@app.route('/register', methods = ['POST'])
+def register():
+    data = request.get_json()
+    if User.query.filter_by( email = data['email']).first() is not None:
+        return jsonify({
+            'message': 'El correo ya existe'
+        }), 400
+    
+    usuario = User( userName=data['userName'], email=data['email'])
+    usuario.SetPassword(data['password'])
+    db.session.add(usuario)
+    db.session.commit()
+    return jsonify({
+        'message': f' El {usuario.userName} a sido registrado' 
+    }), 201
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
