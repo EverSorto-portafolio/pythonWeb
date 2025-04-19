@@ -87,6 +87,20 @@ def register():
         'message': f' El {usuario.userName} a sido registrado' 
     }), 201
 
+@app.route('/login', methods = ['POST'])
+def login():
+    data = request.get_json()
+    usuario = User.query.filter_by(email=data['email']).first()
+    if usuario is None or not usuario.check_password(data['password']):
+        return jsonify({
+            'message': 'Correo o contraseña incorrecta'
+        }), 401
+    return jsonify({
+        'message': f'Bienvenido {usuario.userName}'
+    }), 200
+
+
+
 
 
 
