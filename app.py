@@ -8,10 +8,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ejemplo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
-        
-with app.app_context():
-    db.create_all()
 
+
+        
 @app.route('/')
 def  home():
     return "Hola mundo"
@@ -101,14 +100,9 @@ def login():
 
 
 
-
-
-
-
-
-
-
 if __name__ == "__main__":
+    with app.app_context():
+        print("Creando la base de datos y las tablas...")
+        db.create_all()
+        print("Base de datos y tablas creadas.")
     app.run(debug=True)
-
-
