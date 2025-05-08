@@ -1,9 +1,10 @@
 from flask import Flask, jsonify , request, render_template_string
 from models.article import db, Article 
 from models.user import User
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ejemplo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
