@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from "react";
+import Layout from "./components/Layout";
 
 
 
@@ -20,6 +21,11 @@ export default function Home() {
 console.log(article);
 
   return (
-    <div> Hola mundo</div>
+    <Layout>
+      <div className="container mx-auto py-10">
+        <h1 className="text-4xl font-bold md-6 text-indigo-600">Hola mundo</h1>
+
+      </div>
+    </Layout>
   );
 }
