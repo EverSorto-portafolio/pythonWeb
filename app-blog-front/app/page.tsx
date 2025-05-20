@@ -36,7 +36,7 @@ export default function Home() {
                   <a href={`/article/${article.id}`} className="text-indigo-600 font-semibold hover:text-indigo-400"> Leer mas</a>
                 </div>
               ))
-
+              
             }
           </div>
         </div>
